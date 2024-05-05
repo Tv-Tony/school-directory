@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Instructor Selection</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        /* Custom CSS for styling */
+        body {
+            padding-top: 50px; /* Space for fixed navbar */
+        }
+        .banner {
+            background-color: #f8f9fa; /* Light gray background color */
+            color: #000; /* Black text color */
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        .form-control {
+            border: 1px solid #ced4da;
+            border-radius: 0.25rem;
+        }
+        .action-btn {
+            margin-top: 5px;
+        }
+    </style>
+</head>
+<body>
+
+
+<!-- Banner displaying title, course instructor's name, and email -->
+<div class="banner">
+    <form id="titleForm" th:action="@{/saveCourseChanges}" th:object="${course}" method="POST">
+        <input type="hidden" name="id" th:value="${course.id}"> <!-- Hidden input for course ID -->
+        <div class="form-group">
+            <label for="titleInput"><strong>Class Title:</strong></label>
+            <input type="text" class="form-control" id="titleInput" th:field="*{title}">
+        </div>
+        <div class="form-group">
+            <strong>Instructor:</strong>
+            <span th:if="${course.instructor != null}">
+                <span th:text="${course.instructor.user.firstName + ' ' + course.instructor.user.lastName}"></span>
+                <span th:text="${course.instructor.user.email}"></span>
+            </span>
+            <span th:unless="${course.instructor != null}">None</span>
+        </div>
+        <button type="submit" class="btn btn-primary">Save</button>
+    </form>
+</div>
+
+
+
+
+
+<!-- Table of Instructors -->
+<div class="container">
+    <table class="table table-striped">
+        <thead class="thead-dark">
+        <tr>
+            <th>First Name</th>
+            <th>Last Name</th>
+            <th>Email</th>
+            <th>Action</th>
+        </tr>
+        </thead>
+        <tbody>
+        <!-- Loop through instructors and display them in a table -->
+        <tr th:each="instructor : ${instructors}">
+            <td th:text="${instructor.user.firstName}"></td>
+            <td th:text="${instructor.user.lastName}"></td>
+            <td th:text="${instructor.user.email}"></td>
+            <td>
+                <!-- Add Instructor Button -->
+                <form action="#" th:action="@{/addInstructor}" method="Post" style="display: inline;">
+                    <input type="hidden" name="id" th:value="${instructor.id}" />
+                    <input type="hidden" name="course" th:value="${course.id}" /> <!-- Add course object here -->
+                    <button type="submit" class="btn btn-primary">Add Instructor</button>
+                </form>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+</body>
+</html>

@@ -45,6 +45,11 @@
     </div>
 </div>
 
+
+
+
+
+
 <!-- Create Instructor Button -->
 <div class="container">
     <div class="row">
@@ -93,6 +98,10 @@
         </div>
     </div>
 </div>
+
+
+
+
 
 <!-- Create Student Button -->
 <div class="container">
@@ -148,6 +157,76 @@
         </div>
     </div>
 </div>
+
+
+
+
+
+
+<!-- Create Course Button -->
+<div class="container">
+    <div class="row">
+        <div class="col-md-12 create-btn">
+            <a href="/showCreateSCourseForm" class="btn btn-primary">Create Course</a>
+        </div>
+    </div>
+</div>
+
+<!-- Courses Table -->
+<div class="container">
+    <div class="row">
+        <div class="col-md-12">
+            <h2>Courses</h2>
+            <div class="table-responsive">
+                <table class="table">
+                    <thead>
+                    <tr>
+                        <th class="col-md-1">ID</th>
+                        <th class="col-md-2">Title</th>
+                        <th class="col-md-2">Instructor</th>
+                        <th class="col-md-2">Instructor Email</th>
+                        <th class="col-md-2">Students</th>
+                        <th class="col-md-3">Actions</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="course : ${courses}">
+                        <td th:text="${course.id}"></td>
+                        <td th:text="${course.title}"></td>
+                        <td>
+                            <span th:if="${course.instructor != null}" th:text="${course.instructor.user.firstName + ' ' + course.instructor.user.lastName}"></span>
+                            <span th:if="${course.instructor == null}" style="font-weight: bold;">None</span>
+                        </td>
+                        <td>
+                            <span th:if="${course.instructor != null}" th:text="${course.instructor.user.email}"></span>
+                            <span th:if="${course.instructor == null}" style="font-weight: bold;">None</span>
+                        </td>
+                        <td>
+                            <form action="#" th:action="@{/nothing}" method="POST" style="display: inline;">
+                                <input type="hidden" name="id" th:value="${course.id}" />
+                                <button type="submit" class="btn btn-info">Students</button>
+                            </form>
+                        </td>
+                        <td>
+                            <form action="#" th:action="@{/instructorSelection}" method="GET" style="display: inline;">
+                                <input type="hidden" name="id" th:value="${course.id}" />
+                                <button type="submit" class="btn btn-primary">Update</button>
+                            </form>
+                            <form action="#" th:action="@{/deleteCourse}" method="POST" style="display: inline;">
+                                <input type="hidden" name="id" th:value="${course.id}" />
+                                <button type="submit" class="btn btn-danger">Delete</button>
+                            </form>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
 
 </body>
 </html>

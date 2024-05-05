@@ -28,7 +28,7 @@
 
                     <!-- Registration Form -->
                     <form th:action="@{/processInstructorUpdateForm}" th:object="${instructor}" method="POST" class="form-horizontal">
-                        <!-- Hidden input field for student ID -->
+                        <!-- Hidden input field for instructor ID -->
                         <input type="hidden" th:field="*{id}" />
 
                         <!-- First Name -->

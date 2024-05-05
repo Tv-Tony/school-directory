@@ -3,6 +3,9 @@ package com.tvtoner.schoolapp.entity;
 import com.tvtoner.schoolapp.security.entity.User;
 import jakarta.persistence.*;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Entity
 @Table(name = "instructor")
 public class Instructor {
@@ -15,6 +18,9 @@ public class Instructor {
     @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinColumn(name = "user_id", referencedColumnName = "id")
     private User user;
+
+    @OneToMany(mappedBy = "instructor")
+    private List<Course> courses;
 
     //Constructors
     public Instructor(){
@@ -40,6 +46,24 @@ public class Instructor {
 
     public void setUser(User user) {
         this.user = user;
+    }
+
+    public List<Course> getCourses() {
+        return courses;
+    }
+
+    public void setCourses(List<Course> courses) {
+        this.courses = courses;
+    }
+
+    // add a single course
+    public void addCourse(Course theCourse){
+
+        if (this.courses == null){
+            this.courses = new ArrayList<>();
+        }
+
+        this.courses.add(theCourse);
     }
 
     // toString() method

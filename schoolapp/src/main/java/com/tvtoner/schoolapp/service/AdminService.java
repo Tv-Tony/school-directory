@@ -1,5 +1,6 @@
 package com.tvtoner.schoolapp.service;
 
+import com.tvtoner.schoolapp.entity.Course;
 import com.tvtoner.schoolapp.entity.Instructor;
 import com.tvtoner.schoolapp.entity.Student;
 import org.springframework.stereotype.Service;
@@ -24,4 +25,15 @@ public interface AdminService {
     void updateInstructor(Instructor theInstructor);
 
     void deleteInstructor(long instructorId);
+
+    List<Course> getAllCourses();
+
+    Course getCourseById(long theId);
+
+    void deleteCourse(long courseId);
+
+    void updateCourse(Course theCourse);
+
+    void addCourse(String title);
+
 }
