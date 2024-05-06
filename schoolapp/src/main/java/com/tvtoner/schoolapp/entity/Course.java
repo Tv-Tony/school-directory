@@ -1,5 +1,6 @@
 package com.tvtoner.schoolapp.entity;
 
+import com.tvtoner.schoolapp.entity.assignments.Assignment;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -37,6 +38,9 @@ public class Course {
     )
     private List<Student> students;
 
+    @OneToMany(mappedBy = "course", cascade = CascadeType.ALL)
+    private List<Assignment> assignments;
+
     // Constructor with Instructor
     public Course(String title, Instructor instructor) {
         this.title = title;
@@ -51,6 +55,16 @@ public class Course {
         }
 
         this.students.add(theStudent);
+    }
+
+    // Add a single assignment
+    public void addAssignment(Assignment assignment){
+
+        if (this.assignments == null){
+            this.assignments = new ArrayList<>();
+        }
+
+        this.assignments.add(assignment);
     }
 
 
