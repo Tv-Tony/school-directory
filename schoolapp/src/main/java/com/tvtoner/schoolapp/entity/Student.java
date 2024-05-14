@@ -29,7 +29,7 @@ public class Student {
     )
     private List<Course> courses;
 
-    @OneToMany(mappedBy = "student")
+    @OneToMany(mappedBy = "student", cascade = CascadeType.ALL)
     private List<Grade> grades;
 
 

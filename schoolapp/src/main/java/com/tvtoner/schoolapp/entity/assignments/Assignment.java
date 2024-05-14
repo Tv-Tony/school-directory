@@ -31,7 +31,7 @@ public class Assignment {
     @OneToMany(mappedBy = "assignment", cascade = CascadeType.ALL)
     private List<Question> questions;
 
-    @OneToMany(mappedBy = "assignment")
+    @OneToMany(mappedBy = "assignment", cascade = CascadeType.ALL)
     private List<Grade> grades;
 
     //Constructos
