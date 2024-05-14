@@ -1,5 +1,6 @@
 package com.tvtoner.schoolapp.entity;
 
+import com.tvtoner.schoolapp.entity.assignments.Grade;
 import com.tvtoner.schoolapp.security.entity.User;
 import jakarta.persistence.*;
 
@@ -18,7 +19,7 @@ public class Student {
     @JoinColumn(name = "user_id", referencedColumnName = "id")
     private User user;
 
-    @ManyToMany(fetch = FetchType.LAZY,
+    @ManyToMany(fetch = FetchType.EAGER,
             cascade = {CascadeType.DETACH, CascadeType.REFRESH,
                     CascadeType.MERGE, CascadeType.PERSIST})
     @JoinTable(
@@ -27,6 +28,11 @@ public class Student {
             inverseJoinColumns = @JoinColumn(name = "course_id")
     )
     private List<Course> courses;
+
+    @OneToMany(mappedBy = "student")
+    private List<Grade> grades;
+
+
 
     public Student() {
         // Default constructor
@@ -61,6 +67,24 @@ public class Student {
         this.courses = courses;
     }
 
+    public List<Grade> getGrades() {
+        return grades;
+    }
+
+    public void setGrades(List<Grade> grades) {
+        this.grades = grades;
+    }
+
+    // Add Grade
+    public void addGrade(Grade theGrade){
+
+        if (this.grades == null){
+            this.grades = new ArrayList<>();
+        }
+
+        this.grades.add(theGrade);
+    }
+
     // add singe course
     public void addCourse(Course theCourse){
 
@@ -69,6 +93,12 @@ public class Student {
         }
 
         this.courses.add(theCourse);
+    }
+
+    // remove a course
+    public void removeCourseById(long courseId) {
+        // Find the course with the given ID in the courses set and remove it
+        courses.removeIf(course -> course.getId() == courseId);
     }
 
     // toString() Method

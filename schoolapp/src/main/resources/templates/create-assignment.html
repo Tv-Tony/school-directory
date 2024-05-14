@@ -28,7 +28,6 @@
                     <label for="title" class="form-label">Assignment Title</label>
                     <!-- Pre-populate the value of the input field -->
                     <input type="text" class="form-control" id="title" name="title" placeholder="Enter title" required th:value="${session.assignment.title}">
-                    <!-- Add hidden input field for courseId -->
                     <input type="hidden" name="courseId" th:value="${course.id}" />
                 </div>
             </form>
@@ -130,7 +129,6 @@
 <script>
     // Submit the form when the "Add Question" button is clicked
     document.getElementById("questionForm").addEventListener("submit", function(event) {
-        // Prevent the default form submission
         event.preventDefault();
 
         // Copy the value of the title field to the hidden input field

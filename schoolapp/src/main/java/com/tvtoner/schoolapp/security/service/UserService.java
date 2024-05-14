@@ -21,4 +21,6 @@ public interface UserService extends UserDetailsService {
 
     void updateInstructor(Instructor theInstructor);
 
+    void updateUser(User theUser);
+
 }

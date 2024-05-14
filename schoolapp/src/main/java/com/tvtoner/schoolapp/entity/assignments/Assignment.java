@@ -31,6 +31,9 @@ public class Assignment {
     @OneToMany(mappedBy = "assignment", cascade = CascadeType.ALL)
     private List<Question> questions;
 
+    @OneToMany(mappedBy = "assignment")
+    private List<Grade> grades;
+
     //Constructos
 
 
@@ -49,6 +52,15 @@ public class Assignment {
         }
 
         questions.add(theQuestion);
+    }
+
+    public void addGrade(Grade theGrade){
+
+        if (this.grades == null){
+            this.grades = new ArrayList<>();
+        }
+
+        this.grades.add(theGrade);
     }
 
     //get a question by its id

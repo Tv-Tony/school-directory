@@ -13,10 +13,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,6 +31,13 @@ public class AdminController {
         this.userService = userService;
     }
 
+    /**
+     * This method uses the admin service adn sends attributes to be displayed on the admin
+     * homepage
+     * @param theModel model to add attributes
+     * @param authentication authentication to check if its working correctly
+     * @return thymeleaf template for admin home page
+     */
     @GetMapping("/adminHomePage")
     public String adminHomePage(Model theModel, Authentication authentication){
 
@@ -46,6 +50,7 @@ public class AdminController {
         // get the list of instructors
         List<Instructor> instructors = adminService.getAllInstructors();
 
+        // get the list of courses
         List<Course> courses = adminService.getAllCourses();
 
 
@@ -57,18 +62,36 @@ public class AdminController {
         return "users/admin-home-page";
     }
 
+    /**
+     * This method puts a student object in the update html template, thymeleaf automatically calls
+     * getters for the fields, so they are already pre-populated making it easier to update
+     * @param studentId Get the parameter to access the student
+     * @param theModel model to add attributes
+     * @return thymeleaf template for updating the student
+     */
     @PostMapping("/updateStudent")
     public String updateStudent(@RequestParam("id") long studentId, Model theModel){
 
         // retrieve student,
         Student tempStudent = adminService.getStudentById(studentId);
 
+        // add the student to the model
         theModel.addAttribute("student", tempStudent);
 
         return "update/update-student";
 
     }
 
+    /**
+     * This method grabs the student object that had the updates from the setters of thymeleaf
+     * then grabs a user, we make an existing student object that holds the same information as the
+     * given model attribute, and we set the users name and email and then save the student, since the
+     * id is of an existing student it is updated
+     * @param student receive the student attribute from template
+     * @param theBindingResult holds the result of binding and any validation errors
+     * @param theModel model to add attributes
+     * @return sends user to admin homepage
+     */
     @PostMapping("/processStudentUpdateForm")
     public String processUpdateStudent(@Valid @ModelAttribute("student") Student student,
                                        BindingResult theBindingResult,
@@ -80,15 +103,17 @@ public class AdminController {
         // grab the user
         User existingUser = existingStudent.getUser();
 
+        // set the values
         existingUser.setFirstName(student.getUser().getFirstName());
         existingUser.setLastName(student.getUser().getLastName());
         existingUser.setEmail(student.getUser().getEmail());
 
-
+        // check binding results for errors
         if (theBindingResult.hasErrors()){
             return "update/update-student";
         }
 
+        // update the student
        userService.updateStudent(existingStudent);
 
         System.out.println("Student Successfully Updated");
@@ -96,6 +121,11 @@ public class AdminController {
         return "redirect:/adminHomePage";
     }
 
+    /**
+     * Takes the student id from the template and gets the student object and deletes it
+     * @param studentId student id to access student
+     * @return redirect to admin home page
+     */
     @PostMapping("/deleteStudent")
     public String deleteStudent(@RequestParam("id") long studentId){
 
@@ -106,18 +136,34 @@ public class AdminController {
         return "redirect:/adminHomePage";
     }
 
+    /**
+     * get the instructor id and retrieve the instructor and add the object in the model for the
+     * thymeleaf template to process
+     * @param instructorId id of the instructor
+     * @param theModel model to add attributes
+     * @return update instructor template
+     */
     @PostMapping("/updateInstructor")
     public String updateInstructor(@RequestParam("id") long instructorId, Model theModel){
 
-        // retrieve student,
+        // retrieve instructor
         Instructor tempInstructor = adminService.getInstructorById(instructorId);
 
+        // add the attribute
         theModel.addAttribute("instructor", tempInstructor);
 
         return "update/update-instructor";
 
     }
 
+    /**
+     * This method takes the Instructor object with the updated fields from html and processes them,
+     * so they can be saved into the db
+     * @param instructor instructor object with updated fields from thymeleaf setter
+     * @param theBindingResult checks for validation errors
+     * @param theModel model to add attributes
+     * @return redirect to the admin home page
+     */
     @PostMapping("/processInstructorUpdateForm")
     public String processUpdateStudent(@Valid @ModelAttribute("instructor") Instructor instructor,
                                        BindingResult theBindingResult,
@@ -129,15 +175,17 @@ public class AdminController {
         // grab the user
         User existingUser = existingInstructor.getUser();
 
+        // set the fields
         existingUser.setFirstName(instructor.getUser().getFirstName());
         existingUser.setLastName(instructor.getUser().getLastName());
         existingUser.setEmail(instructor.getUser().getEmail());
 
-
+        // check for validation errors
         if (theBindingResult.hasErrors()){
             return "update/update-instructor";
         }
 
+        // update the instructor
         userService.updateInstructor(existingInstructor);
 
         System.out.println("Instructor Successfully Updated");
@@ -145,20 +193,24 @@ public class AdminController {
         return "redirect:/adminHomePage";
     }
 
+    /**
+     * Method uses the userService and instructor id to get the user
+     * @param instructorId instructor id parameter from template
+     * @return redirect the admin home page
+     */
     @PostMapping("/deleteInstructor")
     public String deleteInstructor(@RequestParam("id") long instructorId){
-//        System.out.println("Delete Instructor Method");
-//        userService.deleteUser(adminService.getInstructorById(instructorId).getUser());
-//
-//        System.out.println("Successfully deleted the Instructor");
 
+        // try catch to delete the user, cascade will also delete the instructor
         try {
             userService.deleteUser(adminService.getInstructorById(instructorId).getUser());
+
             System.out.println("Successfully deleted the Instructor");
+
         } catch (Exception e) {
+
             System.out.println("Error deleting instructor: " + e.getMessage());
         }
-
 
         return "redirect:/adminHomePage";
     }
@@ -177,6 +229,13 @@ public class AdminController {
         return "redirect:/adminHomePage";
     }
 
+    /**
+     * This method gets the id of the course, so we can put in the model as well as the
+     * list of all the teachers, so we can give html access to all of these
+     * @param id Course id given by template
+     * @param theModel model to add attributes
+     * @return model with instructors list and course to be able to access in the template
+     */
     @GetMapping("/instructorSelection")
     public String instructorSelection(@RequestParam("id") long id, Model theModel){
 
@@ -205,6 +264,14 @@ public class AdminController {
         return "redirect:/instructorSelection?id=" + courseId;
     }
 
+    /**
+     * Updates the title of the course
+     * @param courseId id of current course
+     * @param course Course model attribute
+     * @param theBindingResult has result of binding and used for validation purposes
+     * @param theModel model to add attributes
+     * @return to admin home page
+     */
     @PostMapping("/saveCourseChanges")
     public String saveCourseChanges(@RequestParam("id") long courseId,
                                     @Valid @ModelAttribute("course") Course course,
@@ -233,6 +300,11 @@ public class AdminController {
         return "redirect:/adminHomePage";
     }
 
+    /**
+     * Method just directs the admin user to the course create form
+     * @param theModel model to add attributes
+     * @return create course form
+     */
     @GetMapping("/showCreateSCourseForm")
     public String createCourse(Model theModel){
 
@@ -241,6 +313,11 @@ public class AdminController {
         return "register/create-course";
     }
 
+    /**
+     * this method processes the create course form and saves to db
+     * @param title new course title
+     * @return to admin home page
+     */
     @PostMapping("/processCourseCreate")
     public String course(@RequestParam("courseTitle") String title){
 
@@ -252,7 +329,23 @@ public class AdminController {
         adminService.updateCourse(course);
 
        return "redirect:/adminHomePage";
+    }
 
+    /**
+     * this method requests the course id from the previous page and sends it to the template from where we can call
+     * course.students() to get the students of this specific course
+     * @param courseId course id
+     * @param theModel model to add attributes
+     * @return view students from the admin home page
+     */
+    @GetMapping("/viewCourseStudents")
+    public String viewCourseStudents(@RequestParam("id") long courseId,
+                                     Model theModel){
+
+
+        theModel.addAttribute("course", adminService.getCourseById(courseId));
+
+        return "course-students-admin-page";
     }
 
 

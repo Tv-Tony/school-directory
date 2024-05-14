@@ -43,6 +43,15 @@ public class CustomAuthenticationSuccessHandler implements AuthenticationSuccess
 //        response.sendRedirect(request.getContextPath() + "/");
 //    }
 
+    /**
+     * Handles successful authentication by redirecting the user based on their role.
+     *
+     * @param request The HTTP servlet request
+     * @param response The HTTP servlet response
+     * @param authentication The authentication object containing the user's details and authorities
+     * @throws IOException If an I/O error occurs
+     * @throws ServletException If a servlet error occurs
+     */
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication)
             throws IOException, ServletException {

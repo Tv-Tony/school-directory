@@ -29,6 +29,11 @@ public class StudentRegistrationController {
         this.userService = userService;
     }
 
+    /**
+     * Initializes a binder for web data, trimming strings to remove leading and trailing whitespace.
+     *
+     * @param dataBinder The web data binder to initialize
+     */
     @InitBinder
     public void initBinder(WebDataBinder dataBinder) {
 
@@ -37,6 +42,12 @@ public class StudentRegistrationController {
         dataBinder.registerCustomEditor(String.class, stringTrimmerEditor);
     }
 
+    /**
+     * Displays the student registration form.
+     *
+     * @param theModel The model to add attributes
+     * @return The view for the student registration form
+     */
     @GetMapping("/showStudentRegistrationForm")
     public String showMyLoginPage(Model theModel) {
 
@@ -45,6 +56,16 @@ public class StudentRegistrationController {
         return "register/student-registration/registration-form";
     }
 
+    /**
+     * Processes the submitted student registration form and saves the new student object to db
+     *
+     * @param theWebUser The submitted web user object
+     * @param theBindingResult The result of the binding/validation process
+     * @param session The HTTP session
+     * @param theModel The model to add attributes
+     * @param authentication The authentication object representing the current user's authentication
+     * @return The view to redirect based on the authentication status
+     */
     @PostMapping("/processStudentRegistrationForm")
     public String processStudentRegistrationForm(
             @Valid @ModelAttribute("webUser") WebUser theWebUser,

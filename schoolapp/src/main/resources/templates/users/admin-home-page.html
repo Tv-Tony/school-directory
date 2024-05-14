@@ -211,7 +211,7 @@
                             <span th:if="${course.instructor == null}" style="font-weight: bold;">None</span>
                         </td>
                         <td>
-                            <form action="#" th:action="@{/nothing}" method="POST" style="display: inline;">
+                            <form action="#" th:action="@{/viewCourseStudents}" method="get" style="display: inline;">
                                 <input type="hidden" name="id" th:value="${course.id}" />
                                 <button type="submit" class="btn btn-info">Students</button>
                             </form>
